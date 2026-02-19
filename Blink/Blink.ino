@@ -25,27 +25,87 @@
 */
 
 // the setup function runs once when you press reset or power the board
+int brightness = 0;
+int fadeAmount = 5;
+
 void setup() {
-  pinMode(10, OUTPUT);
-  pinMode(9, OUTPUT);
-  pinMode(8, OUTPUT);  // Piezo speaker
+  pinMode(10, OUTPUT);  
+  pinMode(9, OUTPUT);   
+  pinMode(8, OUTPUT);   
+  pinMode(6, OUTPUT);   
 }
 
 void loop() {
 
-  // --- First Beat ---
-  digitalWrite(10, HIGH);
-  digitalWrite(9, LOW);
-  tone(8, 200);      // Low "kick" sound
-  delay(120);
-  noTone(8);
-  delay(80);
+  // ===== SIREN SWEEP UP =====
+  for (int freq = 500; freq <= 1500; freq += 10) {
 
-  // --- Second Beat ---
-  digitalWrite(10, LOW);
-  digitalWrite(9, HIGH);
-  tone(8, 200);
-  delay(120);
-  noTone(8);
-  delay(300);
+    tone(8, freq);
+
+    // --- Double flash left ---
+    digitalWrite(10, HIGH);
+    digitalWrite(9, LOW);
+    delay(40);
+    digitalWrite(10, LOW);
+    delay(40);
+
+    digitalWrite(10, HIGH);
+    delay(40);
+    digitalWrite(10, LOW);
+    delay(80);
+
+    // --- Double flash right ---
+    digitalWrite(9, HIGH);
+    delay(40);
+    digitalWrite(9, LOW);
+    delay(40);
+
+    digitalWrite(9, HIGH);
+    delay(40);
+    digitalWrite(9, LOW);
+    delay(80);
+
+    // Fade LED (same as before)
+    analogWrite(6, brightness);
+    brightness += fadeAmount;
+
+    if (brightness <= 0 || brightness >= 255) {
+      fadeAmount = -fadeAmount;
+    }
+  }
+
+  // ===== SIREN SWEEP DOWN =====
+  for (int freq = 1500; freq >= 500; freq -= 10) {
+
+    tone(8, freq);
+
+    // Same strobe pattern
+    digitalWrite(10, HIGH);
+    digitalWrite(9, LOW);
+    delay(40);
+    digitalWrite(10, LOW);
+    delay(40);
+
+    digitalWrite(10, HIGH);
+    delay(40);
+    digitalWrite(10, LOW);
+    delay(80);
+
+    digitalWrite(9, HIGH);
+    delay(40);
+    digitalWrite(9, LOW);
+    delay(40);
+
+    digitalWrite(9, HIGH);
+    delay(40);
+    digitalWrite(9, LOW);
+    delay(80);
+
+    analogWrite(6, brightness);
+    brightness += fadeAmount;
+
+    if (brightness <= 0 || brightness >= 255) {
+      fadeAmount = -fadeAmount;
+    }
+  }
 }
